@@ -1,0 +1,68 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h1>My Products</h1>
+        <a href="{% url 'product-create' %}" class="btn btn-primary">Add New Product</a>
+    </div>
+
+    {% if messages %}
+        {% for message in messages %}
+            <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+                {{ message }}
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+        {% endfor %}
+    {% endif %}
+
+    <div class="row">
+        {% for product in products %}
+            <div class="col-md-4 mb-4">
+                <div class="card h-100">
+                    {% if product.image %}
+                        {% if product.image_thumbnail %}
+                            <img src="{{ product.image_thumbnail.url }}" class="card-img-top" alt="{{ product.name }}" style="height: 200px; object-fit: cover;">
+                        {% else %}
+                            <img src="{{ product.image.url }}" class="card-img-top" alt="{{ product.name }}" style="height: 200px; object-fit: cover;">
+                        {% endif %}
+                    {% else %}
+                        <div class="card-img-top bg-light d-flex align-items-center justify-content-center" style="height: 200px;">
+                            <span class="text-muted">No image available</span>
+                        </div>
+                    {% endif %}
+                    <div class="card-body d-flex flex-column">
+                        <h5 class="card-title">{{ product.name }}</h5>
+                        <p class="card-text text-muted">
+                            <small>{{ product.category.name }}</small>
+                        </p>
+                        <p class="card-text">{{ product.description|truncatewords:15 }}</p>
+                        <div class="mt-auto">
+                            {% if product.on_sale %}
+                                <p class="card-text mb-0">
+                                    <strong class="text-danger">Price: ${{ product.display_price }}</strong> 
+                                    <small class="text-muted"><del>${{ product.price }}</del></small>
+                                </p>
+                                <p class="card-text"><small class="text-success">{{ product.get_active_discount.discount_percentage|floatformat:0 }}% off ({{ product.get_active_discount.name }})</small></p>
+                            {% else %}
+                                <p class="card-text"><strong>Price: ${{ product.price }}</strong></p>
+                            {% endif %}
+                            <div class="d-grid gap-2">
+                                <a href="{{ product.get_absolute_url }}" class="btn btn-primary btn-sm">View Details</a>
+                                <a href="{% url 'delete-product' product.id %}" class="btn btn-danger btn-sm">Delete</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        {% empty %}
+            <div class="col-12">
+                <div class="alert alert-info">
+                    You haven't added any products yet. 
+                    <a href="{% url 'product-create' %}" class="alert-link">Add your first product</a>
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %} 

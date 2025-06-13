@@ -1,0 +1,24 @@
+# http://editorconfig.org
+
+root = true
+
+[*]
+charset = utf-8
+end_of_line = lf
+indent_style = space
+indent_size = 4
+trim_trailing_whitespace = true
+insert_final_newline = true
+
+[*.py]
+max_line_length = 88
+ensure_newline_before_comments = true
+include_trailing_comma = true
+use_parentheses = true
+
+[**/{.venv,venv}/**]
+indent_size = unset
+insert_final_newline = unset
+
+[Makefile]
+indent_style = tab

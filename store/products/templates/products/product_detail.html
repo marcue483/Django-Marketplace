@@ -1,0 +1,57 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container mt-4">
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="{% url 'product-list' %}">Products</a></li>
+            <li class="breadcrumb-item active" aria-current="page">{{ product.name }}</li>
+        </ol>
+    </nav>
+
+    <div class="row">
+        <div class="col-md-6">
+            {% if product.image %}
+                {% if product.image_thumbnail %}
+                    <img src="{{ product.image_thumbnail.url }}" class="img-fluid rounded" alt="{{ product.name }}">
+                {% else %}
+                    <img src="{{ product.image.url }}" class="img-fluid rounded" alt="{{ product.name }}">
+                {% endif %}
+            {% else %}
+                <div class="bg-light d-flex align-items-center justify-content-center rounded" style="height: 400px;">
+                    <span class="text-muted">No image available</span>
+                </div>
+            {% endif %}
+        </div>
+        <div class="col-md-6">
+            <h1 class="mb-3">{{ product.name }}</h1>
+            <p class="text-muted">
+                Category: {{ product.category.name }} | 
+                Uploaded by {{ product.user.username }}
+            </p>
+            <div class="mb-4">
+                {% if product.on_sale %}
+                    <h3 class="text-danger mb-0">${{ product.display_price }}</h3>
+                    <p class="text-muted"><del>${{ product.price }}</del></p>
+                    <p class="text-success">{{ product.get_active_discount.discount_percentage|floatformat:0 }}% off ({{ product.get_active_discount.name }})</p>
+                {% else %}
+                    <h3 class="mb-0">${{ product.price }}</h3>
+                {% endif %}
+            </div>
+            <div class="mb-4">
+                <h4>Description</h4>
+                <p>{{ product.description }}</p>
+            </div>
+            <div class="d-grid gap-2">
+                <a href="{% url 'product-list' %}" class="btn btn-secondary">Back to Products</a>
+                {% if product.user == request.user %}
+                    <form method="post" action="{% url 'delete-product' product.id %}" style="display: inline;">
+                        {% csrf_token %}
+                        <button type="submit" class="btn btn-danger w-100">Delete Product</button>
+                    </form>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %} 

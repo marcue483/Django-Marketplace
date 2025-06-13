@@ -1,0 +1,58 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container mt-4">
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="{% url 'product-list' %}">Products</a></li>
+            <li class="breadcrumb-item active" aria-current="page">{{ category.name }}</li>
+        </ol>
+    </nav>
+
+    <div class="row mb-4">
+        <div class="col">
+            <h1>{{ category.name }}</h1>
+            {% if category.description %}
+            <p class="lead">{{ category.description }}</p>
+            {% endif %}
+        </div>
+    </div>
+
+    <div class="row">
+        {% for product in products %}
+        <div class="col-md-4 mb-4">
+            <div class="card h-100">
+                {% if product.image %}
+                <img src="{{ product.image_thumbnail.url }}" class="card-img-top" alt="{{ product.name }}" style="height: 200px; object-fit: cover;">
+                {% else %}
+                <div class="card-img-top bg-light d-flex align-items-center justify-content-center" style="height: 200px;">
+                    <span class="text-muted">No image available</span>
+                </div>
+                {% endif %}
+                <div class="card-body d-flex flex-column">
+                    <h5 class="card-title">{{ product.name }}</h5>
+                    <p class="card-text text-muted"><small>{{ product.category.name }}</small></p>
+                    <p class="card-text">{{ product.description|truncatewords:15 }}</p>
+                    <div class="mt-auto">
+                        {% if product.on_sale %}
+                            <p class="card-text mb-0">
+                                <strong class="text-danger">Price: ${{ product.display_price }}</strong> 
+                                <small class="text-muted"><del>${{ product.price }}</del></small>
+                            </p>
+                            <p class="card-text"><small class="text-success">{{ product.get_active_discount.discount_percentage|floatformat:0 }}% off ({{ product.get_active_discount.name }})</small></p>
+                        {% else %}
+                            <p class="card-text"><strong>Price: ${{ product.price }}</strong></p>
+                        {% endif %}
+                        <a href="{{ product.get_absolute_url }}" class="btn btn-primary btn-sm mt-2">View Details</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% empty %}
+        <div class="col-12">
+            <p>No products available in this category.</p>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %} 

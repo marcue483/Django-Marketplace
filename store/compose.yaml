@@ -1,0 +1,21 @@
+services:
+  store:
+    build: .
+    container_name: store
+    command: python manage.py runserver 0.0.0.0:8000
+    volumes:
+      - .:/app
+    environment:
+      - PYTHONUNBUFFERED=1
+    networks:
+      - caddy_network
+    labels:
+      caddy: store.localdev.me:8443
+      caddy.reverse_proxy: "{{upstreams 8000}}"
+      caddy.tls: "internal"
+      caddy.tls.protocols: "tls1.2 tls1.3"
+
+networks:
+  caddy_network:
+    external: true
+    name: caddy_network

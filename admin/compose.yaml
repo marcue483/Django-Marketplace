@@ -1,0 +1,16 @@
+services:
+  admin:
+    container_name: admin
+    build: .
+    labels:
+      caddy: admin.localdev.me:8443
+      caddy.reverse_proxy: "{{upstreams http 8000}}"
+      caddy.tls: "internal"
+    networks:
+      - caddy_network
+    volumes:
+      - ./data:/data
+
+networks:
+  caddy_network:
+    external: true

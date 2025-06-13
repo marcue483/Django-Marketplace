@@ -1,0 +1,34 @@
+services:
+  caddy:
+    image: lucaslorentz/caddy-docker-proxy:ci-alpine
+    container_name: caddy
+    ports:
+      - "8443:8443"
+      - "80:80"
+    environment:
+      - CADDY_INGRESS_NETWORKS=caddy_network
+      - CADDY_DOCKER_CADDYFILE_DEBUG=true
+      - CADDY_DOCKER_PROCESS_CADDYFILE=true
+      - CADDY_GLOBAL_OPTIONS=debug
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - caddy_data:/data
+      - caddy_config:/config
+    networks:
+      - caddy_network
+    restart: unless-stopped
+    labels:
+      caddy.servers: |
+        {
+          debug
+          auto_https disable_redirects
+          local_certs
+        }
+
+networks:
+  caddy_network:
+    name: caddy_network
+
+volumes:
+  caddy_data:
+  caddy_config:

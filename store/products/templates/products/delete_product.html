@@ -1,0 +1,27 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-header">
+                    <h3 class="mb-0">Delete Product</h3>
+                </div>
+                <div class="card-body">
+                    <p class="lead">Are you sure you want to delete "{{ product.name }}"?</p>
+                    <p class="text-muted">This action cannot be undone.</p>
+                    
+                    <form method="post">
+                        {% csrf_token %}
+                        <div class="d-grid gap-2">
+                            <button type="submit" class="btn btn-danger">Yes, Delete Product</button>
+                            <a href="{% url 'my-products' %}" class="btn btn-secondary">Cancel</a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %} 
